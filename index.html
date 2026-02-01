@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calculadora Nutricional</title>
+  
+  <meta name="description" content="Calculadora nutricional para analizar valores alimenticios de forma clara y visual.">
+
+  <link rel="preconnect" href="https://fonts.googleapis.">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+  <link href="https://fonts.googleapis.com/css2?family=Google+Sans+Flex:wght@100..1000&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
+
+  <style>
+    body {
+      font-family: 'Google Sans Flex', sans-serif;
+    }
+  </style>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js" defer></script>
+</head>
+
+<body>
+  <header>
+    <h1>Calculadora Nutricional</h1>
+  </header>
+  
+  <main>
+    
+  </main>
+  
+  <footer>
+    
+  </footer>
+  
+  <script defer>
+    "use strict";
+    
+const NUTRIENTES = {
+  "Macronutrientes": [
+    { nombre: "Energía", unidad: "kcal", vdr: 2000, tipo: "energia" },
+    { nombre: "Proteínas", unidad: "g", vdr: 50, tipo: "masa" },
+    { nombre: "Carbohidratos", unidad: "g", vdr: 300, tipo: "masa" },
+    { nombre: "Grasas totales", unidad: "g", vdr: 70, tipo: "masa" },
+    { nombre: "Agua", unidad: "g", vdr: 2000, tipo: "volumen" }
+  ],
+  "Vitaminas": {
+    "Liposolubles": [
+      { nombre: "Vitamina A", unidad: "µg", vdr: 800, tipo: "masa" },
+      { nombre: "Vitamina D", unidad: "µg", vdr: 15, tipo: "masa" },
+      { nombre: "Vitamina E", unidad: "mg", vdr: 12, tipo: "masa" },
+      { nombre: "Vitamina K", unidad: "µg", vdr: 75, tipo: "masa" }
+    ],
+    "Hidrosolubles": [
+      { nombre: "Vitamina C", unidad: "mg", vdr: 80, tipo: "masa" },
+      { nombre: "Vitamina B1", unidad: "mg", vdr: 1.1, tipo: "masa" },
+      { nombre: "Vitamina B2", unidad: "mg", vdr: 1.4, tipo: "masa" },
+      { nombre: "Vitamina B3", unidad: "mg", vdr: 16, tipo: "masa" },
+      { nombre: "Vitamina B5", unidad: "mg", vdr: 5, tipo: "masa" },
+      { nombre: "Vitamina B6", unidad: "mg", vdr: 1.4, tipo: "masa" },
+      { nombre: "Vitamina B7", unidad: "µg", vdr: 50, tipo: "masa" },
+      { nombre: "Vitamina B9", unidad: "µg", vdr: 200, tipo: "masa" },
+      { nombre: "Vitamina B12", unidad: "µg", vdr: 2.5, tipo: "masa" },
+      { nombre: "Colina", unidad: "mg", vdr: 400, tipo: "masa" }
+    ]
+  },
+  "Minerales": {
+    "Macrominerales": [
+      { nombre: "Calcio", unidad: "mg", vdr: 800, tipo: "masa" },
+      { nombre: "Fósforo", unidad: "mg", vdr: 700, tipo: "masa" },
+      { nombre: "Magnesio", unidad: "mg", vdr: 375, tipo: "masa" },
+      { nombre: "Sodio", unidad: "mg", vdr: 2000, tipo: "masa" },
+      { nombre: "Potasio", unidad: "mg", vdr: 3500, tipo: "masa" },
+      { nombre: "Cloruro", unidad: "mg", vdr: 2300, tipo: "masa" },
+      { nombre: "Azufre", unidad: "mg", vdr: 2000, tipo: "masa" }
+    ],
+    "Oligoelementos": [
+      { nombre: "Hierro", unidad: "mg", vdr: 14, tipo: "masa" },
+      { nombre: "Zinc", unidad: "mg", vdr: 10, tipo: "masa" },
+      { nombre: "Yodo", unidad: "µg", vdr: 150, tipo: "masa" },
+      { nombre: "Selenio", unidad: "µg", vdr: 55, tipo: "masa" },
+      { nombre: "Cobre", unidad: "mg", vdr: 1, tipo: "masa" },
+      { nombre: "Manganeso", unidad: "mg", vdr: 2, tipo: "masa" },
+      { nombre: "Fluoruro", unidad: "mg", vdr: 3.5, tipo: "masa" },
+      { nombre: "Cromo", unidad: "µg", vdr: 40, tipo: "masa" },
+      { nombre: "Molibdeno", unidad: "µg", vdr: 50, tipo: "masa" }
+    ]
+  },
+  "Aminoácidos esenciales": [
+    { nombre: "Histidina", unidad: "mg", vdr: 700, tipo: "masa" },
+    { nombre: "Isoleucina", unidad: "mg", vdr: 1400, tipo: "masa" },
+    { nombre: "Leucina", unidad: "mg", vdr: 2700, tipo: "masa" },
+    { nombre: "Lisina", unidad: "mg", vdr: 2100, tipo: "masa" },
+    { nombre: "Metionina", unidad: "mg", vdr: 1000, tipo: "masa" },
+    { nombre: "Fenilalanina", unidad: "mg", vdr: 1750, tipo: "masa" },
+    { nombre: "Treonina", unidad: "mg", vdr: 1050, tipo: "masa" },
+    { nombre: "Triptófano", unidad: "mg", vdr: 250, tipo: "masa" },
+    { nombre: "Valina", unidad: "mg", vdr: 1820, tipo: "masa" }
+  ],
+  "Ácidos grasos esenciales": [
+    { nombre: "Ácido Alfa-Linolénico (ALA - Omega 3)", unidad: "g", vdr: 1.6, tipo: "masa" },
+    { nombre: "Ácido Linoleico (LA - Omega 6)", unidad: "g", vdr: 14, tipo: "masa" }
+  ]
+};
+
+const ALIMENTOS = [
+  { nombre: "Manzana", composicion: { Energía: 52, Proteínas: 0.3, Carbohidratos: 14, "Grasas totales": 0.2 } }
+];
+
+const UNIDADES = {
+  masa: { g: 1, mg: .001, µg: .000001 },
+  volumen: { ml: 1, L: 1000 },
+  energia: { kcal: 1, kJ: 1 / 4.184 }
+};
+  </script>
+</body>
+
+</html>
